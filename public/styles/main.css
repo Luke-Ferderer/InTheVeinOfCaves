@@ -49,20 +49,17 @@ h4 {
 .map-icon {
     background-color: #c4c4c4;
     border: 1px solid black;
-    /* TODO: need to be adjusted  to fix weird resizing stuff*/
     flex: 0 0 90px;
-    /* height: 90px; 
-    width: 90px; */
     margin-right: 8px;
 }
 
-/* TODO: need to be adjusted  to fix weird resizing stuff*/
 .map-details {
-    display:inline-block;
+    display: flex;
     background-color: #c4c4c4;
     border: 1px solid black;
     flex: 1 1 auto;
     font-size: 10pt;
+    justify-content: space-between;
     min-height: 90px;
     padding: 4px;
 }

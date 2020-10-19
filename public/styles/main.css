@@ -9,6 +9,8 @@ body {
 
 .page-container {
     margin-top: 75px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .btn, .btn:hover, .btn:focus {
@@ -23,31 +25,52 @@ body {
     margin: 0 auto;
 }
 
+h4 {
+    text-align: center;
+    font-weight: bold;
+}
+
 #guestButtons, #memberButton {
     text-align: right;
+}
+
+#mapList {
+    border: 1px solid black;
+    padding: 16px;
+}
+
+.map-item {
+    display: flex;
+    word-break: break-all;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 .map-icon {
     background-color: #c4c4c4;
     border: 1px solid black;
-    float: left;
-    height: 128px;
-    width: 128px;
-    margin-right: 16px;
+    /* TODO: need to be adjusted  to fix weird resizing stuff*/
+    flex: 0 0 90px;
+    /* height: 90px; 
+    width: 90px; */
+    margin-right: 8px;
 }
 
+/* TODO: need to be adjusted  to fix weird resizing stuff*/
 .map-details {
     display:inline-block;
     background-color: #c4c4c4;
     border: 1px solid black;
-    height: 128px;
-    width: 400px;
-    padding: 10px;
+    flex: 1 1 auto;
+    font-size: 10pt;
+    min-height: 90px;
+    padding: 4px;
 }
 
 .map-detail-lines {
     display: flex;
     flex-direction: column;
+    flex-wrap: initial;
     float: left;
     height: 100%;
     justify-content: space-evenly;
@@ -62,5 +85,7 @@ body {
 }
 
 .map-detail-buttons .btn {
-    width: 80px;
+    width: 100%;
+    font-size: 10pt;
+    margin: 0;
 }

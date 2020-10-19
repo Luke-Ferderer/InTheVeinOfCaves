@@ -3,34 +3,23 @@
  * Provides the JavaScript interactions for all pages.
  *
  * @author 
- * PUT_YOUR_NAME_HERE
+ * Luke Ferderer, Griffin Annis
  */
 
-/** namespace. */
 var rhit = rhit || {};
 
-/** globals */
-rhit.variableName = "";
+rhit.navBarTemplate;
 
-/** function and class syntax examples */
-rhit.functionName = function () {
-	/** function body */
-};
-
-rhit.ClassName = class {
-	constructor() {
-
-	}
-
-	methodName() {
-
-	}
-}
-
-/* Main */
-/** function and class syntax examples */
 rhit.main = function () {
-	console.log("Ready");
+	if(document.querySelector("#mainPage")) {
+		rhit.navBarTemplate = document.querySelector("#navBarTemplate");
+	}
+	// TODO: Add in once hosted
+	// if(!rhit.navBarTemplate) {
+	// 	window.location.href = "/";
+	// }
+	const templateClone = rhit.navBarTemplate.content.cloneNode(true).firstElementChild;
+	document.querySelector("body").appendChild(templateClone);
 };
 
 rhit.main();

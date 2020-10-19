@@ -34,7 +34,7 @@ h4 {
     text-align: right;
 }
 
-#mainPage {
+#mainPage, #generatePage {
     text-align: center;
 }
 
@@ -42,6 +42,11 @@ h4 {
     width: 370px;
     margin-top: 20px;
     font-size: 1.5em;
+}
+
+#generateButtons button {
+    width: 150px;
+    margin-top: 20px;
 }
 
 #mapListContainer {

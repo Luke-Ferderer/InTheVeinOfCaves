@@ -26,3 +26,41 @@ body {
 #guestButtons, #memberButton {
     text-align: right;
 }
+
+.map-icon {
+    background-color: #c4c4c4;
+    border: 1px solid black;
+    float: left;
+    height: 128px;
+    width: 128px;
+    margin-right: 16px;
+}
+
+.map-details {
+    display:inline-block;
+    background-color: #c4c4c4;
+    border: 1px solid black;
+    height: 128px;
+    width: 400px;
+    padding: 10px;
+}
+
+.map-detail-lines {
+    display: flex;
+    flex-direction: column;
+    float: left;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.map-detail-buttons {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-evenly;
+    float: right;
+}
+
+.map-detail-buttons .btn {
+    width: 80px;
+}

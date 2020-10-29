@@ -20,6 +20,10 @@ body {
     margin: 0 10px;
 }
 
+.modal-content .modal-footer .btn {
+    margin: 10px;
+}
+
 .navbar-brand {
     text-align: center;
     margin: 0 auto;

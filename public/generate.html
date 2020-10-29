@@ -16,7 +16,7 @@
     <div><img src="MapTemp.jpeg"></div><!-- TODO: Replace this with actual maps -->
     <div id="generateButtons">
       <div>
-        <button id="configureButton" type="button" class="btn">Configure</button>
+        <button id="configureButton" type="button" class="btn" data-toggle="modal" data-target="#configureModal">Configure</button>
         <button id="saveButton" type="button" class="btn">Save</button>
       </div>
       <div>
@@ -25,6 +25,32 @@
       </div>
     </div>
   </div>
+
+  <!-- MODALS -->
+  <div class="modal fade" id="configureModal" tabindex="-1" role="dialog" aria-labelledby="configure modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Configure Map Generation</h5>
+        </div>
+        <div class="modal-body">
+          <div class="form-group bmd-form-group">
+            <label for="inputNumberOfCaves" class="bmd-label-floating">Number of Caves</label>
+            <input type="text" class="form-control" id="inputNumberOfCaves">
+          </div>
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="inputExits">
+            <label for="inputExits" class="form-check-label">Generate Enterences and Exits</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal">CANCEL</button>
+          <button id="submitConfigure" type="button" class="btn" data-dismiss="modal">GENERATE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="scripts/jquery.min.js"></script>
   <script src="scripts/popper.js"></script>
   <script src="scripts/bootstrap-material-design.js"></script>

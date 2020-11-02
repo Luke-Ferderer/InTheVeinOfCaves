@@ -18,6 +18,7 @@ rhit.CaveSystemGenerator = class {
 		let cavesToGenerate = numCaves ? numCaves : rhit.randomRange(3, 8);
 		let caveSystem = [];
 
+		//generate the caves themselves
 		for(let i = 0; i < cavesToGenerate; i++) {
 			caveSystem[i] = new rhit.Cave();
 			if(i > 0) {
@@ -25,8 +26,49 @@ rhit.CaveSystemGenerator = class {
 			}
 		}
 
+		//randomly make more links
+		for(let i = 0; i < cavesToGenerate; i++) {
+			if(Math.random() > .5) {
+				caveSystem[i].linkCave(this.nearestCave(caveSystem, i));
+			}
+		}
+
+		//randomize cave link locations
+		for(let i = 0; i < cavesToGenerate; i++) {
+			this.shuffle(caveSystem[i].links);
+		}
+
 		return caveSystem;
 	};
+
+	nearestCave = function(caveSystem, index) {
+		let currentCave = caveSystem[(index + 1) % caveSystem.length];
+		let distance = (currentCave.x - caveSystem[index].x) ** 2 + (currentCave.y - caveSystem[index].y) ** 2;
+
+		for(let i = 0; i < caveSystem.length; i++) {
+			if(i != index) {
+				let newDistance =  (caveSystem[i].x - caveSystem[index].x) ** 2 + (caveSystem[i].y - caveSystem[index].y) ** 2;
+				
+				if(newDistance < distance) {
+					currentCave = caveSystem[i];
+					distance = newDistance;
+				}
+			}
+		}
+
+		return currentCave;
+	}
+
+	/**
+	 * taken from https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
+	 */
+	shuffle = function(a) {
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+	}
 
 }
 

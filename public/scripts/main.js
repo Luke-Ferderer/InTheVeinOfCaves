@@ -21,7 +21,7 @@ rhit.CaveSystemGenerator = class {
 
 		//generate the caves themselves
 		for(let i = 0; i < cavesToGenerate; i++) {
-			caveSystem[i] = new rhit.Cave();
+			caveSystem[i] = new rhit.Cave(i == 0, i == cavesToGenerate - 1);
 			if(i > 0) {
 				caveSystem[i].linkCave(caveSystem[i-1]); //each cave has at least one link
 			}
@@ -74,11 +74,13 @@ rhit.CaveSystemGenerator = class {
 }
 
 rhit.Cave = class {
-	constructor() {
+	constructor(isEntrance, isExit) {
 		this.size = rhit.randomRange(1, 6);
 		this.x = rhit.randomRange(0, 100);
 		this.y = rhit.randomRange(0, 100);
 		this.links = [null, null, null, null, null, null];
+		this.isEntrance = isEntrance;
+		this.isExit = isExit;
 	}
 
 	linkCave = function(otherCave) {
@@ -109,6 +111,7 @@ rhit.initializePage = function() {
 			console.log(rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value));
 		});
 
+		console.log(rhit.caveSystemGenerator.generateSystem());
 	}
 }
 

@@ -125,11 +125,11 @@ rhit.FbSingleCaveManager = class {
 		this._unsubscribe();
 	}
 
-	update(name, tags, public, likes) {
+	update(name, tags, isPublic, likes) {
 		this._ref.update({
 			[rhit.FB_KEY_NAME]: name,
 			[rhit.FB_KEY_TAGS]: tags,
-			[rhit.FB_KEY_PUBLIC]: public,
+			[rhit.FB_KEY_PUBLIC]: isPublic,
 			[rhit.FB_KEY_LIKES]: likes
 		}).then(() => {
 			console.log("Document successfully updated!");
@@ -154,7 +154,7 @@ rhit.FbSingleCaveManager = class {
 		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
 	}
 
-	get public() {
+	get isPublic() {
 		return this._documentSnapshot.get(rhit.FB_KEY_PUBLIC);
 	}
 

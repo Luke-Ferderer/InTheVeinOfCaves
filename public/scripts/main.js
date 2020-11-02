@@ -93,11 +93,22 @@ rhit.randomRange = function(min, max) {
 
 rhit.initializePage = function() {
 	if(document.querySelector("#generatePage")) {
+		
 		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+		
+		const numCavesInput = document.querySelector("#inputNumberOfCaves");
+		const enterExitInput = document.querySelector("#inputExits")
 
 		document.querySelector("#generateButton").addEventListener("click", (params) => {
 			console.log(rhit.caveSystemGenerator.generateSystem());
 		});
+
+		document.querySelector("#submitConfigure").addEventListener("click", (params) => {
+			console.log(numCavesInput.value, enterExitInput.checked);
+			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : this.randomRange(3,9);
+			console.log(rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value));
+		});
+
 	}
 }
 

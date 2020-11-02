@@ -18,7 +18,7 @@ rhit.FB_KEY_USER = "user";
 
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
-rhit.generatePageController;
+rhit.fbSingleCaveManager;
 
 rhit.CaveSystemGenerator = class {
 	constructor() {};
@@ -167,11 +167,8 @@ rhit.FbSingleCaveManager = class {
 	}
 }
 
-rhit.initializePage = function() {
-	if(document.querySelector("#generatePage")) {
-		
-		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
-		
+rhit.GeneratePageController = class {
+	constructor() {
 		const numCavesInput = document.querySelector("#inputNumberOfCaves");
 		const enterExitInput = document.querySelector("#inputExits")
 
@@ -181,7 +178,7 @@ rhit.initializePage = function() {
 
 		document.querySelector("#submitConfigure").addEventListener("click", (params) => {
 			console.log(numCavesInput.value, enterExitInput.checked);
-			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : this.randomRange(3,9);
+			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
 			console.log(rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value));
 		});
 
@@ -189,7 +186,8 @@ rhit.initializePage = function() {
 	}
 }
 
-rhit.main = function () {
+rhit.initializePage = function() {
+
 	$("#navBar").load("/templates.html #navBar > *");
 	$("#browseMaps").load("/templates.html #browseMaps > *", () => {
 		$("#map0").load("/templates.html .map-item", () => {
@@ -200,9 +198,14 @@ rhit.main = function () {
 			});
 		});
 	});
-  	rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
-	console.log(rhit.caveSystemGenerator.generateSystem());
 
+	if(document.querySelector("#generatePage")) {
+		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+		new rhit.GeneratePageController();
+	}
+}
+
+rhit.main = function () {
 	rhit.initializePage();
 };
 

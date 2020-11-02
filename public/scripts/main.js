@@ -10,6 +10,7 @@ var rhit = rhit || {};
 
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
+rhit.generatePageController;
 
 rhit.CaveSystemGenerator = class {
 	constructor() {};
@@ -90,6 +91,16 @@ rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+rhit.initializePage = function() {
+	if(document.querySelector("#generatePage")) {
+		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+
+		document.querySelector("#generateButton").addEventListener("click", (params) => {
+			console.log(rhit.caveSystemGenerator.generateSystem());
+		});
+	}
+}
+
 rhit.main = function () {
 	$("#navBar").load("/templates.html #navBar > *");
 	$("#browseMaps").load("/templates.html #browseMaps > *", () => {
@@ -101,8 +112,8 @@ rhit.main = function () {
 			});
 		});
 	});
-  rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
-	console.log(rhit.caveSystemGenerator.generateSystem());
+
+	rhit.initializePage();
 };
 
 rhit.main();

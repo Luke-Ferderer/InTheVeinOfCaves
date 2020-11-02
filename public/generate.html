@@ -17,7 +17,7 @@
     <div id="generateButtons">
       <div>
         <button id="configureButton" type="button" class="btn" data-toggle="modal" data-target="#configureModal">Configure</button>
-        <button id="saveButton" type="button" class="btn">Save</button>
+        <button id="saveButton" type="button" class="btn" data-toggle="modal" data-target="#saveModal">Save</button>
       </div>
       <div>
         <button id="generateButton" type="button" class="btn">Generate</button>
@@ -46,6 +46,30 @@
         <div class="modal-footer">
           <button type="button" class="btn" data-dismiss="modal">CANCEL</button>
           <button id="submitConfigure" type="button" class="btn" data-dismiss="modal">GENERATE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="save modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Save Map</h5>
+        </div>
+        <div class="modal-body">
+          <div class="form-group bmd-form-group">
+            <label for="inputMapName" class="bmd-label-floating">Map Name</label>
+            <input type="text" class="form-control" id="inputMapName">
+          </div>
+          <div class="form-group bmd-form-group">
+            <label for="inputMapTags" class="bmd-label-floating">Map Tags</label>
+            <input type="text" class="form-control" id="inputMapTags">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn" data-dismiss="modal">CANCEL</button>
+          <button id="submitSave" type="button" class="btn" data-dismiss="modal">SAVE</button>
         </div>
       </div>
     </div>

@@ -90,10 +90,18 @@ rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-
 rhit.main = function () {
 	$("#navBar").load("/templates.html #navBar");
-	rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+	$("#browseMaps").load("/templates.html #browseMaps", () => {
+		$("#map0").load("/templates.html .map-item", () => {
+			$("#map1").load("/templates.html .map-item", () => {
+				$("#map2").load("/templates.html .map-item", () => {
+					$("#map3").load("/templates.html .map-item");
+				});
+			});
+		});
+	});
+  rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
 	console.log(rhit.caveSystemGenerator.generateSystem());
 };
 

@@ -8,6 +8,14 @@
 
 var rhit = rhit || {};
 
+rhit.FB_COLLECTION_CAVES = "Caves";
+rhit.FB_KEY_LIKES = "likes";
+rhit.FB_KEY_MAP_INFO = "mapInfo";
+rhit.FB_KEY_NAME = "name";
+rhit.FB_KEY_PUBLIC = "public";
+rhit.FB_KEY_TAGS = "tags";
+rhit.FB_KEY_USER = "user";
+
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
 
@@ -90,6 +98,72 @@ rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+rhit.FbSingleCaveManager = class {
+	constructor(caveId) {
+		this._documentSnapshot = {};
+		this._unsubscribe = null;
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_CAVES).doc(caveId);
+	}
+
+	beginListening(changeListener) {
+		this._unsubscribe = this._ref.onSnapshot((doc) => {
+			if (doc.exists) {
+				console.log("Document data: ", doc.data());
+				this._documentSnapshot = doc;
+				changeListener();
+			}
+			else {
+				console.log("No such document!");
+			}
+		});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+
+	update(name, tags, public, likes) {
+		this._ref.update({
+			[rhit.FB_KEY_NAME]: name,
+			[rhit.FB_KEY_TAGS]: tags,
+			[rhit.FB_KEY_PUBLIC]: public,
+			[rhit.FB_KEY_LIKES]: likes
+		}).then(() => {
+			console.log("Document successfully updated!");
+		}).catch(function(error) {
+			console.error("Error updating document: ", error);
+		});
+	}
+
+	delete() {
+		return this._ref.delete();
+	}
+
+	get likes() {
+		return this._documentSnapshot.get(rhit.FB_KEY_LIKES);
+	}
+
+	get mapInfo() {
+		return this._documentSnapshot.get(rhit.FB_KEY_MAP_INFO);
+	}
+
+	get name() {
+		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
+	}
+
+	get public() {
+		return this._documentSnapshot.get(rhit.FB_KEY_PUBLIC);
+	}
+
+	get tags() {
+		return this._documentSnapshot.get(rhit.FB_KEY_TAGS);
+	}
+
+	get user() {
+		return this._documentSnapshot.get(rhit.FB_KEY_USER);
+	}
+}
+
 rhit.main = function () {
 	$("#navBar").load("/templates.html #navBar > *");
 	$("#browseMaps").load("/templates.html #browseMaps > *", () => {
@@ -101,7 +175,7 @@ rhit.main = function () {
 			});
 		});
 	});
-  rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+  	rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
 	console.log(rhit.caveSystemGenerator.generateSystem());
 };
 

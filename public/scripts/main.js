@@ -31,14 +31,15 @@ rhit.CaveSystemGenerator = class {
 		for(let i = 0; i < cavesToGenerate; i++) {
 			caveSystem[i] = new rhit.Cave(i == 0, i == cavesToGenerate - 1);
 			if(i > 0) {
-				caveSystem[i].linkCave(caveSystem[i-1]); //each cave has at least one link
+				caveSystem[i].linkCave(caveSystem[i-1], i, i - 1); //each cave has at least one link
 			}
 		}
 
 		//randomly make more links
 		for(let i = 0; i < cavesToGenerate; i++) {
 			if(Math.random() > .5) {
-				caveSystem[i].linkCave(this.nearestCave(caveSystem, i));
+				let linkedCave = this.nearestCave(caveSystem, i);
+				caveSystem[i].linkCave(linkedCave, i, caveSystem.indexOf(linkedCave));
 			}
 		}
 
@@ -91,9 +92,9 @@ rhit.Cave = class {
 		this.isExit = isExit;
 	}
 
-	linkCave = function(otherCave) {
-		this.links[this.links.indexOf(null)] = otherCave;
-		otherCave.links[otherCave.links.indexOf(null)] = this;
+	linkCave = function(otherCave, thisIndex, otherIndex) {
+		this.links[this.links.indexOf(null)] = otherIndex;
+		otherCave.links[otherCave.links.indexOf(null)] = thisIndex;
 	}
 }
 

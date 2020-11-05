@@ -21,7 +21,10 @@ rhit.caveSystemGenerator;
 rhit.fbSingleCaveManager;
 
 rhit.CaveSystemGenerator = class {
-	constructor() {};
+	constructor() {
+		this.currentSystem = null;
+		this.generateSystem();
+	};
 
 	generateSystem(numCaves, generateEntranceExit = true) {
 		let cavesToGenerate = numCaves ? numCaves : rhit.randomRange(3, 8);
@@ -48,7 +51,7 @@ rhit.CaveSystemGenerator = class {
 			this.shuffle(caveSystem[i].links);
 		}
 
-		return caveSystem;
+		this.currentSystem = caveSystem;
 	};
 
 	nearestCave = function(caveSystem, index) {
@@ -174,16 +177,18 @@ rhit.GeneratePageController = class {
 		const enterExitInput = document.querySelector("#inputExits")
 
 		document.querySelector("#generateButton").addEventListener("click", (params) => {
-			console.log(rhit.caveSystemGenerator.generateSystem());
+			rhit.caveSystemGenerator.generateSystem();
+			console.log(rhit.caveSystemGenerator.currentSystem);
 		});
 
 		document.querySelector("#submitConfigure").addEventListener("click", (params) => {
 			console.log(numCavesInput.value, enterExitInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
-			console.log(rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value));
+			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
+			console.log(rhit.caveSystemGenerator.currentSystem);
 		});
 
-		console.log(rhit.caveSystemGenerator.generateSystem());
+		console.log(rhit.caveSystemGenerator.currentSystem);
 	}
 }
 

@@ -1,5 +1,5 @@
 $("#navBar").load("/templates.html #navBar > *");
-$("#browseMaps").load("/templates.html #browseMaps > *", () => {
+$("#mapListContainer").load("/templates.html #mapListContainer > *", () => {
     $("#map0").load("/templates.html .map-item", () => {
         $("#map1").load("/templates.html .map-item", () => {
             $("#map2").load("/templates.html .map-item", () => {

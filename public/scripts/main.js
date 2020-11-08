@@ -239,6 +239,11 @@ rhit.initializePage = function() {
 	if(document.querySelector("#generatePage")) {
 		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
 		new rhit.GeneratePageController();
+
+		//unlink save modal if not logged in
+		if(!rhit.fbAuthManager.isSignedIn) {
+			document.querySelector("#saveButton").dataset.target = "#logInRequiredModal"
+		}
 	}
 }
 

@@ -34,7 +34,7 @@ h4 {
     font-weight: bold;
 }
 
-#guestButtons, #memberButton {
+#guestButtons, #memberButton, #accountPageButton {
     text-align: right;
 }
 

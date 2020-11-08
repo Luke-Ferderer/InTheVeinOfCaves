@@ -234,9 +234,18 @@ rhit.FbAuthManager = class {
 
 rhit.initializePage = function() {
 
+	//Navbar button updating
 	if(rhit.fbAuthManager.isSignedIn) {
 		document.querySelector("#guestButtons").hidden = true;
-		document.querySelector("#memberButton").hidden = false;
+		if(document.querySelector("#accountPage")) {
+			document.querySelector("#accountPageButton").hidden = false;
+		} else {
+			document.querySelector("#memberButton").hidden = false;
+		}
+	} else {
+		document.querySelector("#guestButtons").hidden = false;
+		document.querySelector("#accountPageButton").hidden = true;
+		document.querySelector("#memberButton").hidden = true;
 	}
 
 	document.querySelector("#submitLogIn").addEventListener("click", (event) => {
@@ -251,9 +260,23 @@ rhit.initializePage = function() {
 		const passwordConfirm = document.querySelector("#inputConfirmPasswordRegister").value;
 	});
 
+	document.querySelector("#signOutButton").addEventListener("click", (event) => {
+		rhit.fbAuthManager.signOut();
+	})
+
 	if(document.querySelector("#generatePage")) {
 		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
 		new rhit.GeneratePageController();
+	}
+}
+
+rhit.checkForRedirects = function() {
+	if(!rhit.fbAuthManager.isSignedIn) {
+		if(document.querySelector("#accountPage")) {
+			window.location.href = "/";
+		}
+	} else {
+
 	}
 }
 
@@ -262,6 +285,7 @@ rhit.main = function () {
 	rhit.fbAuthManager.beginListening(() => {
 		console.log('rhit.fbAuthManager.isSignedIn :>> ', rhit.fbAuthManager.isSignedIn);
 		if(rhit.fbAuthManager.isSignedIn) { console.log('rhit.fbAuthManager.uid :>> ', rhit.fbAuthManager.uid); };
+		rhit.checkForRedirects();
 		rhit.initializePage();
 	});
 };

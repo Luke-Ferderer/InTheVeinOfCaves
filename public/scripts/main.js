@@ -234,10 +234,20 @@ rhit.FbAuthManager = class {
 
 rhit.initializePage = function() {
 
-	//Navbar button updating
-	if(rhit.fbAuthManager.isSignedIn) {
+	rhit.intializeNavbar();
+
+	if(document.querySelector("#generatePage")) {
+		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
+		new rhit.GeneratePageController();
+	}
+}
+
+rhit.intializeNavbar = function() {
+
+	//display correct button set
+	if (rhit.fbAuthManager.isSignedIn) {
 		document.querySelector("#guestButtons").hidden = true;
-		if(document.querySelector("#accountPage")) {
+		if (document.querySelector("#accountPage")) {
 			document.querySelector("#accountPageButton").hidden = false;
 		} else {
 			document.querySelector("#memberButton").hidden = false;
@@ -248,9 +258,10 @@ rhit.initializePage = function() {
 		document.querySelector("#memberButton").hidden = true;
 	}
 
+	//link all buttons to relevant things
 	document.querySelector("#submitLogIn").addEventListener("click", (event) => {
 		const username = document.querySelector("#inputEmailLogIn").value;
-		const password = document.querySelector("#inputPasswordLogIn").value;		
+		const password = document.querySelector("#inputPasswordLogIn").value;
 		rhit.fbAuthManager.signIn(username, password);
 	});
 
@@ -262,12 +273,7 @@ rhit.initializePage = function() {
 
 	document.querySelector("#signOutButton").addEventListener("click", (event) => {
 		rhit.fbAuthManager.signOut();
-	})
-
-	if(document.querySelector("#generatePage")) {
-		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
-		new rhit.GeneratePageController();
-	}
+	});
 }
 
 rhit.checkForRedirects = function() {

@@ -18,6 +18,7 @@ rhit.FB_KEY_USER = "user";
 
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
+rhit.fbAuthManager;
 rhit.fbSingleCaveManager;
 
 rhit.CaveSystemGenerator = class {
@@ -192,17 +193,57 @@ rhit.GeneratePageController = class {
 	}
 }
 
+rhit.FbAuthManager = class {
+	constructor() {
+		this._user = null;
+	}
+
+	beginListening(changeListener) {
+		firebase.auth().onAuthStateChanged((user) => {
+			this._user = user;
+			changeListener();
+		});
+	}
+
+	signIn(email, password) {
+		console.log(`Log In for ${email}, ${password}`);
+
+		firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log("Log In error:", errorCode, errorMessage);
+		});
+	}
+
+	signOut() {
+		firebase.auth().signOut().catch(function (error) {
+			// An error happened.
+			console.log("Sign out error:", error);
+		});
+	}
+
+	get isSignedIn() {
+		return !!this._user;
+	}
+
+	get uid() {
+		return this._user.uid;
+	}
+}
+
 rhit.initializePage = function() {
 
-	$("#navBar").load("/templates.html #navBar > *");
-	$("#browseMaps").load("/templates.html #browseMaps > *", () => {
-		$("#map0").load("/templates.html .map-item", () => {
-			$("#map1").load("/templates.html .map-item", () => {
-				$("#map2").load("/templates.html .map-item", () => {
-					$("#map3").load("/templates.html .map-item");
-				});
-			});
-		});
+	document.querySelector("#submitLogIn").addEventListener("click", (event) => {
+		const username = document.querySelector("#inputEmailLogIn").value;
+		const password = document.querySelector("#inputPasswordLogIn").value;		
+		rhit.fbAuthManager.signIn(username, password);
+	});
+
+	document.querySelector("#submitRegister").addEventListener("click", (event) => {
+		const username = document.querySelector("#inputEmailRegister").value;
+		const password = document.querySelector("#inputPasswordRegister").value;
+		const passwordConfirm = document.querySelector("#inputConfirmPasswordRegister").value;
 	});
 
 	if(document.querySelector("#generatePage")) {
@@ -212,7 +253,12 @@ rhit.initializePage = function() {
 }
 
 rhit.main = function () {
-	rhit.initializePage();
+	rhit.fbAuthManager = new rhit.FbAuthManager();
+	rhit.fbAuthManager.beginListening(() => {
+		console.log('rhit.fbAuthManager.isSignedIn :>> ', rhit.fbAuthManager.isSignedIn);
+		if(rhit.fbAuthManager.isSignedIn) { console.log('rhit.fbAuthManager.uid :>> ', rhit.fbAuthManager.uid); };
+		rhit.initializePage();
+	});
 };
 
 rhit.main();

@@ -234,6 +234,12 @@ rhit.FbAuthManager = class {
 
 rhit.initializePage = function() {
 
+	if(rhit.fbAuthManager.isSignedIn) {
+		document.querySelector("#guestButtons").hidden = true;
+		document.querySelector("#memberButton").hidden = false;
+
+	}
+	
 	document.querySelector("#submitLogIn").addEventListener("click", (event) => {
 		const username = document.querySelector("#inputEmailLogIn").value;
 		const password = document.querySelector("#inputPasswordLogIn").value;		

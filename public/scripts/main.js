@@ -256,8 +256,6 @@ rhit.FbAuthManager = class {
 	}
 
 	signIn(email, password) {
-		console.log(`Log In for ${email}, ${password}`);
-
 		firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
 			// Handle Errors here.
 			var errorCode = error.code;

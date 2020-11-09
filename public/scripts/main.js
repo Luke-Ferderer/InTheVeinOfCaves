@@ -245,6 +245,8 @@ rhit.initializePage = function() {
 			document.querySelector("#saveButton").dataset.target = "#logInRequiredModal"
 		}
 	}
+
+	$("body").bootstrapMaterialDesign();
 }
 
 rhit.intializeNavbar = function() {
@@ -279,8 +281,6 @@ rhit.intializeNavbar = function() {
 	document.querySelector("#signOutButton").addEventListener("click", (event) => {
 		rhit.fbAuthManager.signOut();
 	});
-
-	$("body").bootstrapMaterialDesign();
 }
 
 rhit.checkForRedirects = function() {

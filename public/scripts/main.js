@@ -233,9 +233,9 @@ rhit.GeneratePageController = class {
 		});
 
 		document.querySelector("#submitSave").addEventListener("click", (params) => {
-			const name = document.querySelector("#inputMapName");
-			const tags = document.querySelector("#inputMapTags");
-			// const mapInfo = TODO: whatever this funciton is
+			const name = document.querySelector("#inputMapName").value;
+			const tags = document.querySelector("#inputMapTags").value;
+			const mapInfo = JSON.stringify(rhit.caveSystemGenerator.currentSystem);
 			rhit.fbCavesManager.add(name, tags, mapInfo);
 		});
 
@@ -278,7 +278,10 @@ rhit.FbAuthManager = class {
 	}
 
 	get uid() {
-		return this._user.uid;
+		if(this.isSignedIn) {
+			return this._user.uid;
+		}
+		return null;
 	}
 }
 
@@ -296,8 +299,7 @@ rhit.initializePage = function() {
 		}
 	}
 
-	const uid = urlParams.get("uid");
-	rhit.fbCavesManager = new rhit.FbCavesManager(uid);
+	rhit.fbCavesManager = new rhit.FbCavesManager(rhit.fbAuthManager.uid);
 
 	$("body").bootstrapMaterialDesign();
 }

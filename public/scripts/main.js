@@ -20,6 +20,7 @@ rhit.navBarTemplate;
 rhit.caveSystemGenerator;
 rhit.fbAuthManager;
 rhit.fbSingleCaveManager;
+rhit.fbCavesManager;
 
 rhit.CaveSystemGenerator = class {
 	constructor() {
@@ -106,6 +107,48 @@ rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+rhit.FbCavesManager = class
+{
+	constructor(uid) {
+		this._uid = uid;
+		this._documentSnapshots = [];
+		this._ref = firebase.firestore().collection(rhit.FB_COLLECTION_CAVES);
+		this._unsubscribe = null;
+	}
+
+	add(name, tags, mapInfo) {
+		this._ref.add({
+			[rhit.FB_KEY_NAME]: name,
+			[rhit.FB_KEY_TAGS]: tags,
+			[rhit.FB_KEY_MAP_INFO]: mapInfo,
+			[rhit.FB_KEY_PUBLIC]: false,
+			[rhit.FB_KEY_LIKES]: 0,
+			[rhit.FB_KEY_USER]: this._uid
+		}).then(function (docRef) {
+			console.log("Document writeen with ID: ", docRef.id);
+		}).catch(function (error) {
+			console.log("Error adding document: ", error);
+		})
+	}
+
+	beginListening(changeListener) {
+		//TODO: make sure to query enough items
+		let query = this._ref.orderBy(rhit.FB_KEY_LIKES, "desc").limit(50);
+		if(document.querySelector("#accountPage")) {
+			query = query.where(rhit.FB_KEY_USER, "==", this._uid);
+		}
+
+		this._unsubscribe = query.onSnapshot((querySnapshot) => {
+			this._documentSnapshots = querySnapshot.docs;
+			changeListener();
+		});
+	}
+
+	stopListening() {
+		this._unsubscribe();
+	}
+}
+
 rhit.FbSingleCaveManager = class {
 	constructor(caveId) {
 		this._documentSnapshot = {};
@@ -189,6 +232,13 @@ rhit.GeneratePageController = class {
 			console.log(rhit.caveSystemGenerator.currentSystem);
 		});
 
+		document.querySelector("#submitSave").addEventListener("click", (params) => {
+			const name = document.querySelector("#inputMapName");
+			const tags = document.querySelector("#inputMapTags");
+			// const mapInfo = TODO: whatever this funciton is
+			rhit.fbCavesManager.add(name, tags, mapInfo);
+		});
+
 		console.log(rhit.caveSystemGenerator.currentSystem);
 	}
 }
@@ -245,6 +295,9 @@ rhit.initializePage = function() {
 			document.querySelector("#saveButton").dataset.target = "#logInRequiredModal"
 		}
 	}
+
+	const uid = urlParams.get("uid");
+	rhit.fbCavesManager = new rhit.FbCavesManager(uid);
 
 	$("body").bootstrapMaterialDesign();
 }

@@ -295,7 +295,9 @@ rhit.initializePage = function() {
 
 		//unlink save modal if not logged in
 		if(!rhit.fbAuthManager.isSignedIn) {
-			document.querySelector("#saveButton").dataset.target = "#logInRequiredModal"
+			document.querySelector("#saveButton").dataset.target = "#logInRequiredModal";
+		} else {
+			document.querySelector("#saveButton").dataset.target = "#saveModal";
 		}
 	}
 

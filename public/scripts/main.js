@@ -279,6 +279,8 @@ rhit.intializeNavbar = function() {
 	document.querySelector("#signOutButton").addEventListener("click", (event) => {
 		rhit.fbAuthManager.signOut();
 	});
+
+	$("body").bootstrapMaterialDesign();
 }
 
 rhit.checkForRedirects = function() {

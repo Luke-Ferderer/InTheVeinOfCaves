@@ -329,10 +329,26 @@ rhit.intializeNavbar = function() {
 		rhit.fbAuthManager.signIn(username, password);
 	});
 
+	$("#logInModal").on("show.bs.modal", (error) => {
+		document.querySelector("#inputEmailLogIn").value = "";
+		document.querySelector("#inputEmailLogIn").parentElement.classList.remove("is-filled");
+		document.querySelector("#inputPasswordLogIn").value = "";
+		document.querySelector("#inputPasswordLogIn").parentElement.classList.remove("is-filled");
+	});
+
 	document.querySelector("#submitRegister").addEventListener("click", (event) => {
 		const username = document.querySelector("#inputEmailRegister").value;
 		const password = document.querySelector("#inputPasswordRegister").value;
 		const passwordConfirm = document.querySelector("#inputConfirmPasswordRegister").value;
+	});
+
+	$("#registerModal").on("show.bs.modal", (error) => {
+		document.querySelector("#inputEmailRegister").value = "";
+		document.querySelector("#inputEmailRegister").parentElement.classList.remove("is-filled");
+		document.querySelector("#inputPasswordRegister").value = "";
+		document.querySelector("#inputPasswordRegister").parentElement.classList.remove("is-filled");
+		document.querySelector("#inputConfirmPasswordRegister").value = "";
+		document.querySelector("#inputConfirmPasswordRegister").parentElement.classList.remove("is-filled");
 	});
 
 	document.querySelector("#signOutButton").addEventListener("click", (event) => {

@@ -56,6 +56,11 @@ h4 {
     height: 340px;
 }
 
+#paper .cave-rect {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
 #generateButtons button {
     width: 150px;
     margin-top: 20px;

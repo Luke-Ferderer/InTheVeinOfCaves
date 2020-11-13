@@ -16,6 +16,9 @@ rhit.FB_KEY_PUBLIC = "public";
 rhit.FB_KEY_TAGS = "tags";
 rhit.FB_KEY_USER = "user";
 
+rhit.CONST_CAVE_WIDTH = 7;
+rhit.CONST_CAVE_SIDE = ((rhit.CONST_CAVE_WIDTH**2)/2)**.5;
+
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
 rhit.fbAuthManager;
@@ -90,8 +93,8 @@ rhit.CaveSystemGenerator = class {
 rhit.Cave = class {
 	constructor(isEntrance, isExit) {
 		this.size = rhit.randomRange(1, 6);
-		this.x = rhit.randomRange(0, 100);
-		this.y = rhit.randomRange(0, 100);
+		this.x = rhit.randomRange(rhit.CONST_CAVE_WIDTH + 3, 98);
+		this.y = rhit.randomRange(rhit.CONST_CAVE_WIDTH + 3, 98);
 		this.links = [null, null, null, null, null, null];
 		this.isEntrance = isEntrance;
 		this.isExit = isExit;
@@ -218,22 +221,30 @@ rhit.FbSingleCaveManager = class {
 rhit.CaveSystemDrawer = class {
 
 	constructor(container) {
-		this.paper = Raphael(container, "100%", "100%");
+		this.container = container;
+		this.paper = Raphael(container.id, "100%", "100%");
 	}
 
 	drawCaveSystem(system) {
 
 		this.paper.clear();
 
+		console.log(system);
 		for(let cave of system) {
 			this.drawCave(cave);
 		}
 	}
 
 	drawCave(cave) {
-		const topLeftX = cave.x - 4 + "%";
-		const topLeftY = cave.y - 4 + "%";
-		let diamond = this.paper.rect(topLeftX, topLeftY, "8%", "8%");
+		const topLeftX = cave.x - rhit.CONST_CAVE_SIDE;
+		const topLeftY = cave.y - rhit.CONST_CAVE_SIDE;
+
+		const diamond = this.paper.rect(topLeftX + "%", topLeftY + "%", rhit.CONST_CAVE_WIDTH + "%", rhit.CONST_CAVE_WIDTH + "%");
+		diamond.node.classList.add("cave-rect");
+		//diamond.transform("r45");
+		diamond.rotate(45);
+
+		//const sizeText = this.paper.text(topLeftX + "%", cave.y + "%", cave.size).attr({fill: "#000"});
 	}
 
 }
@@ -264,7 +275,7 @@ rhit.GeneratePageController = class {
 			rhit.fbCavesManager.add(name, tags, mapInfo);
 		};
 
-		rhit.caveSystemDrawer = new rhit.CaveSystemDrawer("paper");
+		rhit.caveSystemDrawer = new rhit.CaveSystemDrawer(document.querySelector("#paper"));
 		rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
 		//console.log(rhit.caveSystemGenerator.currentSystem);
 	}

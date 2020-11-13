@@ -144,7 +144,7 @@ rhit.CaveSystemDrawer = class {
 		console.log(pathString);
 		const bars = this.paper.path(pathString);
 		
-		//const sizeText = this.paper.text(topLeftX + "%", cave.y + "%", cave.size).attr({fill: "#000"});
+		const sizeText = this.paper.text((topLeftX + rhit.CONST_CAVE_WIDTH/2) + "%", cave.y + "%", cave.size).attr({fill: "#000"});
 	}
 
 }

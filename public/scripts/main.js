@@ -277,11 +277,23 @@ rhit.FbAuthManager = class {
 	}
 
 	signIn(email, password) {
-		firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+		firebase.auth().signInWithEmailAndPassword(email, password).then(function () {
+			$('#logInModal').modal('hide');
+		}).catch(function (error) {
 			// Handle Errors here.
 			var errorCode = error.code;
 			var errorMessage = error.message;
 			console.log("Log In error:", errorCode, errorMessage);
+			if(errorCode == "auth/wrong-password") {
+				document.querySelector("#logInError").innerHTML = "Password is incorrect";
+			} else if(errorCode == "auth/user-not-found") {
+				document.querySelector("#logInError").innerHTML = "There is not an account with this email";
+			} else if(errorCode == "auth/invalid-email") {
+				document.querySelector("#logInError").innerHTML = "The entered email is formatted incorrectly";
+			} else {
+				document.querySelector("#logInError").innerHTML = "There was a log in error. Please try again";
+			}
+			document.querySelector("#logInError").hidden = false;
 		});
 	}
 
@@ -353,6 +365,8 @@ rhit.intializeNavbar = function() {
 		document.querySelector("#inputEmailLogIn").parentElement.classList.remove("is-filled");
 		document.querySelector("#inputPasswordLogIn").value = "";
 		document.querySelector("#inputPasswordLogIn").parentElement.classList.remove("is-filled");
+		document.querySelector("#logInError").innerHTML = "";
+		document.querySelector("#logInError").hidden = true;
 	});
 
 	document.querySelector("#submitRegister").addEventListener("click", (event) => {

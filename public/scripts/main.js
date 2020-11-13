@@ -144,8 +144,9 @@ rhit.CaveSystemDrawer = class {
 		const bars = this.paper.path(pathString);
 		
 		if(this.displaySize) {
-			const sizeText = this.paper.text((topLeftX + rhit.CONST_CAVE_WIDTH/2) + "%", cave.y + "%", cave.size)
+			const sizeText = this.paper.text((topLeftX + (rhit.CONST_CAVE_WIDTH/2)) + "%", (topLeftY + (rhit.CONST_CAVE_WIDTH/2)) + "%", cave.size)
 			sizeText.attr({fill: "#000"});
+			sizeText.node.setAttribute("dominant-baseline", "middle"); //properly centers text
 		}
 	}
 

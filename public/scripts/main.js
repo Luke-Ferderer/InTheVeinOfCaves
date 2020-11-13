@@ -222,6 +222,9 @@ rhit.CaveSystemDrawer = class {
 	}
 
 	drawCaveSystem(system) {
+
+		this.paper.clear();
+
 		for(let cave of system) {
 			this.drawCave(cave);
 		}

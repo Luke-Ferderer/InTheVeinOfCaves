@@ -215,6 +215,16 @@ rhit.FbSingleCaveManager = class {
 	}
 }
 
+rhit.CaveSystemDrawer = class {
+
+	constructor(container) {
+		this.paper = Raphael(container, "100%", "100%");
+
+		this.paper.circle(50, 40, 10).attr("fill", "#f00");
+	}
+
+}
+
 rhit.GeneratePageController = class {
 	constructor() {
 		const numCavesInput = document.querySelector("#inputNumberOfCaves");
@@ -238,6 +248,8 @@ rhit.GeneratePageController = class {
 			const mapInfo = JSON.stringify(rhit.caveSystemGenerator.currentSystem);
 			rhit.fbCavesManager.add(name, tags, mapInfo);
 		};
+
+		rhit.caveSystemDrawer = new rhit.CaveSystemDrawer("paper");
 
 		console.log(rhit.caveSystemGenerator.currentSystem);
 	}

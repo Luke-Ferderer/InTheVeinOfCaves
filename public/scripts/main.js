@@ -219,8 +219,18 @@ rhit.CaveSystemDrawer = class {
 
 	constructor(container) {
 		this.paper = Raphael(container, "100%", "100%");
+	}
 
-		this.paper.circle(50, 40, 10).attr("fill", "#f00");
+	drawCaveSystem(system) {
+		for(let cave of system) {
+			this.drawCave(cave);
+		}
+	}
+
+	drawCave(cave) {
+		const topLeftX = cave.x - 4 + "%";
+		const topLeftY = cave.y - 4 + "%";
+		let diamond = this.paper.rect(topLeftX, topLeftY, "8%", "8%");
 	}
 
 }
@@ -232,14 +242,16 @@ rhit.GeneratePageController = class {
 
 		document.querySelector("#generateButton").onclick = (params) => {
 			rhit.caveSystemGenerator.generateSystem();
-			console.log(rhit.caveSystemGenerator.currentSystem);
+			rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
 		document.querySelector("#submitConfigure").onclick = (params) => {
 			console.log(numCavesInput.value, enterExitInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
 			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
-			console.log(rhit.caveSystemGenerator.currentSystem);
+			rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
 		document.querySelector("#submitSave").onclick = (params) => {
@@ -250,8 +262,8 @@ rhit.GeneratePageController = class {
 		};
 
 		rhit.caveSystemDrawer = new rhit.CaveSystemDrawer("paper");
-
-		console.log(rhit.caveSystemGenerator.currentSystem);
+		rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+		//console.log(rhit.caveSystemGenerator.currentSystem);
 	}
 }
 

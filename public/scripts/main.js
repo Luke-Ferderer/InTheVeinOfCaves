@@ -125,7 +125,7 @@ rhit.FbCavesManager = class
 			[rhit.FB_KEY_LIKES]: 0,
 			[rhit.FB_KEY_USER]: this._uid
 		}).then(function (docRef) {
-			console.log("Document writeen with ID: ", docRef.id);
+			console.log("Document written with ID: ", docRef.id);
 		}).catch(function (error) {
 			console.log("Error adding document: ", error);
 		})
@@ -220,24 +220,24 @@ rhit.GeneratePageController = class {
 		const numCavesInput = document.querySelector("#inputNumberOfCaves");
 		const enterExitInput = document.querySelector("#inputExits")
 
-		document.querySelector("#generateButton").addEventListener("click", (params) => {
+		document.querySelector("#generateButton").onclick = (params) => {
 			rhit.caveSystemGenerator.generateSystem();
 			console.log(rhit.caveSystemGenerator.currentSystem);
-		});
+		};
 
-		document.querySelector("#submitConfigure").addEventListener("click", (params) => {
+		document.querySelector("#submitConfigure").onclick = (params) => {
 			console.log(numCavesInput.value, enterExitInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
 			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
 			console.log(rhit.caveSystemGenerator.currentSystem);
-		});
+		};
 
-		document.querySelector("#submitSave").addEventListener("click", (params) => {
+		document.querySelector("#submitSave").onclick = (params) => {
 			const name = document.querySelector("#inputMapName").value;
 			const tags = document.querySelector("#inputMapTags").value;
 			const mapInfo = JSON.stringify(rhit.caveSystemGenerator.currentSystem);
 			rhit.fbCavesManager.add(name, tags, mapInfo);
-		});
+		};
 
 		console.log(rhit.caveSystemGenerator.currentSystem);
 	}

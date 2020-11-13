@@ -112,8 +112,9 @@ rhit.randomRange = function(min, max) {
 
 rhit.CaveSystemDrawer = class {
 
-	constructor(container) {
+	constructor(container, displaySize=true) {
 		this.container = container;
+		this.displaySize = displaySize;
 		this.paper = Raphael(container.id, "100%", "100%");
 	}
 
@@ -121,7 +122,6 @@ rhit.CaveSystemDrawer = class {
 
 		this.paper.clear();
 
-		console.log(system);
 		for(let cave of system) {
 			this.drawCave(cave);
 		}
@@ -141,10 +141,12 @@ rhit.CaveSystemDrawer = class {
 		const trueTLY = (cave.y - rhit.CONST_CAVE_WIDTH) * this.container.offsetHeight / 100;
 
 		const pathString = `M${trueTLX} ${trueTLY}h${trueWidth}M${trueTLX} ${trueTLY + trueWidth}h${trueWidth}`;
-		console.log(pathString);
 		const bars = this.paper.path(pathString);
 		
-		const sizeText = this.paper.text((topLeftX + rhit.CONST_CAVE_WIDTH/2) + "%", cave.y + "%", cave.size).attr({fill: "#000"});
+		if(this.displaySize) {
+			const sizeText = this.paper.text((topLeftX + rhit.CONST_CAVE_WIDTH/2) + "%", cave.y + "%", cave.size)
+			sizeText.attr({fill: "#000"});
+		}
 	}
 
 }

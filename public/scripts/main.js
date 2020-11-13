@@ -122,8 +122,17 @@ rhit.CaveSystemDrawer = class {
 
 		this.paper.clear();
 
-		for(let cave of system) {
-			this.drawCave(cave);
+		for(let i = 0; i < system.length; i++) {
+			const currentCave = system[i];
+
+			this.drawCave(currentCave);
+			for(let j = 0; j < currentCave.links.length; j++) {
+				if(currentCave.links[j] && currentCave.links[j] > i) {
+					//draw link
+					const otherCave = system[currentCave.links[j]];
+					console.log(currentCave, otherCave);
+				}
+			}
 		}
 	}
 
@@ -147,6 +156,25 @@ rhit.CaveSystemDrawer = class {
 			const sizeText = this.paper.text((topLeftX + (rhit.CONST_CAVE_WIDTH/2)) + "%", (topLeftY + (rhit.CONST_CAVE_WIDTH/2)) + "%", cave.size)
 			sizeText.attr({fill: "#000"});
 			sizeText.node.setAttribute("dominant-baseline", "middle"); //properly centers text
+		}
+	}
+
+	getExitPosition(cave, exitIndex) {
+		switch(exitIndex) {
+			case 0: //top
+				return [cave.x, cave.y - rhit.CONST_CAVE_SIDE];
+			case 1: //top right
+				return [cave.x + rhit.CONST_CAVE_SIDE / 2, cave.y - rhit.CONST_CAVE_SIDE / 2];
+			case 2: //bottom right
+				return [cave.x + rhit.CONST_CAVE_SIDE / 2, cave.y + rhit.CONST_CAVE_SIDE / 2];
+			case 3: //bottom
+				return [cave.x, cave.y + rhit.CONST_CAVE_SIDE];
+			case 4: //bottom left
+				return [cave.x - rhit.CONST_CAVE_SIDE / 2, cave.y + rhit.CONST_CAVE_SIDE / 2];
+			case 5: //top left
+				return [cave.x - rhit.CONST_CAVE_SIDE / 2, cave.y - rhit.CONST_CAVE_SIDE / 2];
+			default:
+				return;
 		}
 	}
 

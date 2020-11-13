@@ -267,7 +267,7 @@ rhit.GeneratePageController = class {
 
 		document.querySelector("#generateButton").onclick = (params) => {
 			rhit.caveSystemGenerator.generateSystem();
-			rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
 			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
@@ -275,7 +275,7 @@ rhit.GeneratePageController = class {
 			console.log(numCavesInput.value, enterExitInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
 			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
-			rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
 			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
@@ -286,8 +286,8 @@ rhit.GeneratePageController = class {
 			rhit.fbCavesManager.add(name, tags, mapInfo);
 		};
 
-		rhit.caveSystemDrawer = new rhit.CaveSystemDrawer(document.querySelector("#paper"));
-		rhit.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+		this.caveSystemDrawer = new rhit.CaveSystemDrawer(document.querySelector("#canvas"));
+		this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
 		//console.log(rhit.caveSystemGenerator.currentSystem);
 	}
 }

@@ -110,6 +110,45 @@ rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+rhit.CaveSystemDrawer = class {
+
+	constructor(container) {
+		this.container = container;
+		this.paper = Raphael(container.id, "100%", "100%");
+	}
+
+	drawCaveSystem(system) {
+
+		this.paper.clear();
+
+		console.log(system);
+		for(let cave of system) {
+			this.drawCave(cave);
+		}
+	}
+
+	drawCave(cave) {
+		const topLeftX = cave.x - rhit.CONST_CAVE_SIDE;
+		const topLeftY = cave.y - rhit.CONST_CAVE_SIDE;
+
+		const diamond = this.paper.rect(topLeftX + "%", topLeftY + "%", rhit.CONST_CAVE_WIDTH + "%", rhit.CONST_CAVE_WIDTH + "%");
+		diamond.node.classList.add("cave-rect");
+		diamond.rotate(45);
+
+		///this is a hack due to path not supporting %s
+		const trueWidth = rhit.CONST_CAVE_WIDTH * 1.5 * this.container.offsetWidth / 100;
+		const trueTLX = (cave.x - rhit.CONST_CAVE_WIDTH) * this.container.offsetWidth / 100;
+		const trueTLY = (cave.y - rhit.CONST_CAVE_WIDTH) * this.container.offsetHeight / 100;
+
+		const pathString = `M${trueTLX} ${trueTLY}h${trueWidth}M${trueTLX} ${trueTLY + trueWidth}h${trueWidth}`;
+		console.log(pathString);
+		const bars = this.paper.path(pathString);
+		
+		//const sizeText = this.paper.text(topLeftX + "%", cave.y + "%", cave.size).attr({fill: "#000"});
+	}
+
+}
+
 rhit.FbCavesManager = class
 {
 	constructor(uid) {
@@ -216,37 +255,6 @@ rhit.FbSingleCaveManager = class {
 	get user() {
 		return this._documentSnapshot.get(rhit.FB_KEY_USER);
 	}
-}
-
-rhit.CaveSystemDrawer = class {
-
-	constructor(container) {
-		this.container = container;
-		this.paper = Raphael(container.id, "100%", "100%");
-	}
-
-	drawCaveSystem(system) {
-
-		this.paper.clear();
-
-		console.log(system);
-		for(let cave of system) {
-			this.drawCave(cave);
-		}
-	}
-
-	drawCave(cave) {
-		const topLeftX = cave.x - rhit.CONST_CAVE_SIDE;
-		const topLeftY = cave.y - rhit.CONST_CAVE_SIDE;
-
-		const diamond = this.paper.rect(topLeftX + "%", topLeftY + "%", rhit.CONST_CAVE_WIDTH + "%", rhit.CONST_CAVE_WIDTH + "%");
-		diamond.node.classList.add("cave-rect");
-		//diamond.transform("r45");
-		diamond.rotate(45);
-
-		//const sizeText = this.paper.text(topLeftX + "%", cave.y + "%", cave.size).attr({fill: "#000"});
-	}
-
 }
 
 rhit.GeneratePageController = class {

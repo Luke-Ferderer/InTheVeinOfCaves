@@ -255,6 +255,27 @@ rhit.FbAuthManager = class {
 		});
 	}
 
+	signUp(email, password) {
+		firebase.auth().createUserWithEmailAndPassword(email, password).then(function () {
+			$('#registerModal').modal('hide');
+		}).catch(function (error) {
+			// Handle Errors here.
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.log("Sign Up error:", errorCode, errorMessage);
+			if(errorCode == "auth/weak-password") {
+				document.querySelector("#registerError").innerHTML = "Password must be at least 6 characters";
+			} else if(errorCode == "auth/email-already-in-use") {
+				document.querySelector("#registerError").innerHTML = "There is already an account with this email";
+			} else if(errorCode == "auth/invalid-email") {
+				document.querySelector("#registerError").innerHTML = "The entered email is formatted incorrectly";
+			} else {
+				document.querySelector("#registerError").innerHTML = "There was a registration error. Please try again";
+			}
+			document.querySelector("#registerError").hidden = false;
+		});
+	}
+
 	signIn(email, password) {
 		firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
 			// Handle Errors here.
@@ -338,6 +359,12 @@ rhit.intializeNavbar = function() {
 		const username = document.querySelector("#inputEmailRegister").value;
 		const password = document.querySelector("#inputPasswordRegister").value;
 		const passwordConfirm = document.querySelector("#inputConfirmPasswordRegister").value;
+		if(password == passwordConfirm) {
+			rhit.fbAuthManager.signUp(username, password);
+		} else {
+			document.querySelector("#registerError").innerHTML = "Passwords do not match";
+			document.querySelector("#registerError").hidden = false;
+		}
 	});
 
 	$("#registerModal").on("show.bs.modal", (error) => {
@@ -347,6 +374,8 @@ rhit.intializeNavbar = function() {
 		document.querySelector("#inputPasswordRegister").parentElement.classList.remove("is-filled");
 		document.querySelector("#inputConfirmPasswordRegister").value = "";
 		document.querySelector("#inputConfirmPasswordRegister").parentElement.classList.remove("is-filled");
+		document.querySelector("#registerError").innerHTML = "";
+		document.querySelector("#registerError").hidden = true;
 	});
 
 	document.querySelector("#signOutButton").addEventListener("click", (event) => {

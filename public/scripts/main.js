@@ -137,6 +137,9 @@ rhit.FbCavesManager = class
 		if(document.querySelector("#accountPage")) {
 			query = query.where(rhit.FB_KEY_USER, "==", this._uid);
 		}
+		else {
+			query = query.where(rhit.FB_KEY_PUBLIC, "==", true);
+		}
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
 			this._documentSnapshots = querySnapshot.docs;
 			changeListener();
@@ -190,6 +193,10 @@ rhit.FbSingleCaveManager = class {
 		});
 	}
 
+	like() {
+		this.update(this.name, this.tags, this.isPublic, this.likes + 1);
+	}
+
 	delete() {
 		return this._ref.delete();
 	}
@@ -203,7 +210,6 @@ rhit.FbSingleCaveManager = class {
 	}
 
 	get name() {
-		console.log("name");
 		return this._documentSnapshot.get(rhit.FB_KEY_NAME);
 	}
 
@@ -261,15 +267,10 @@ rhit.BrowsePageController = class {
 			$(`#map${i}`).load("/templates.html .map-item", () => {
 				document.querySelector(`#map${i} .map-title`).innerText = map.name;
 				document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-				if(map.isPublic) {
-					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-				}
-				else {
-					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;private";
-				}
+				document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
 				document.querySelector(`#map${i} .edit-button`).hidden = true;
 				document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-					//TODO: like map
+					map.like();
 				};
 				document.querySelector(`#map${i} .print-button`).onclick = (event) => {
 					//TODO: print map
@@ -299,7 +300,7 @@ rhit.AccountPageController = class {
 				}
 				document.querySelector(`#map${i} .like-button`).hidden = true;
 				document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
-					//TODO: edit map
+					map.like();
 				};
 				document.querySelector(`#map${i} .print-button`).onclick = (event) => {
 					//TODO: print map

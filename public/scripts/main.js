@@ -117,7 +117,7 @@ rhit.CaveSystemDrawer = class {
 	constructor(container, displaySize=true) {
 		this.container = container;
 		this.displaySize = displaySize;
-		this.paper = Raphael(container.id, "100%", "100%");
+		this.paper = Raphael(container, "100%", "100%");
 	}
 
 	drawCaveSystem(caveSystem) {
@@ -346,6 +346,7 @@ rhit.GeneratePageController = class {
 rhit.BrowsePageController = class {
 	constructor() {
 		rhit.fbCavesManager.beginListening(this.updateList.bind(this));
+		this.caveSystemDrawers = [];
 	}
 
 	updateList() {
@@ -354,6 +355,25 @@ rhit.BrowsePageController = class {
 			map.beginListening(loadMapData.bind(this), i, map, true);
 		}
 	}
+}
+
+function loadMapData(i, map) {
+	$("#mapList").append(`<div id="map${i}"></div>`);
+	$(`#map${i}`).load("/templates.html .map-item", () => {
+		const drawer = new rhit.CaveSystemDrawer(document.querySelector(`#map${i} .paper`), false);
+		this.caveSystemDrawers.push(drawer);
+		document.querySelector(`#map${i} .map-title`).innerText = map.name;
+		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
+		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
+		document.querySelector(`#map${i} .edit-button`).hidden = true;
+		document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+			map.like();
+		};
+		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
+			//TODO: print map
+		};
+		drawer.drawCaveSystem(map.mapInfo);
+	});
 }
 
 rhit.AccountPageController = class {

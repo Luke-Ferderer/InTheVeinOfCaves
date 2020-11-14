@@ -82,6 +82,7 @@ h4 {
     background-color: #c4c4c4;
     border: 1px solid black;
     flex: 0 0 90px;
+    max-height: 90px; 
     margin-right: 8px;
 }
 

@@ -103,6 +103,16 @@ rhit.Cave = class {
 	}
 }
 
+rhit.CaveSystem = class {
+	constructor(caveSystem, title, tags, isPublic, likes) {
+		this.caveSystem = caveSystem;
+		this.title = title;
+		this.tags = tags;
+		this.isPublic = isPublic;
+		this.likes = likes;
+	}
+}
+
 rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -137,7 +147,6 @@ rhit.FbCavesManager = class
 		if(document.querySelector("#accountPage")) {
 			query = query.where(rhit.FB_KEY_USER, "==", this._uid);
 		}
-
 		this._unsubscribe = query.onSnapshot((querySnapshot) => {
 			this._documentSnapshots = querySnapshot.docs;
 			changeListener();
@@ -146,6 +155,16 @@ rhit.FbCavesManager = class
 
 	stopListening() {
 		this._unsubscribe();
+	}
+
+	get length() {
+		return this._documentSnapshots.length;
+	}
+
+	getCaveAtIndex(index) {
+		const docSnapshot = this._documentSnapshots[index];
+		const caveSystem = new rhit.CaveSystem(JSON.parse(docSnapshot.get(rhit.FB_KEY_MAP_INFO)), docSnapshot.get(rhit.FB_KEY_NAME), docSnapshot.get(rhit.FB_KEY_TAGS), docSnapshot.get(rhit.FB_KEY_PUBLIC), docSnapshot.get(rhit.FB_KEY_LIKES));
+		return caveSystem
 	}
 }
 
@@ -243,6 +262,43 @@ rhit.GeneratePageController = class {
 	}
 }
 
+rhit.BrowsePageController = class {
+	constructor() {
+		// document.querySelector("#nextButton").onclick = (event) => {
+			
+		// }
+
+		// document.querySelector("#backButton").onclick = (event) => {
+			
+		// }
+		rhit.fbCavesManager.beginListening(this.updateList.bind(this));
+	}
+
+	updateList() {
+		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
+			const map = rhit.fbCavesManager.getCaveAtIndex(i);
+			$("#mapList").append(`<div id="map${i}"></div>`);
+			$(`#map${i}`).load("/templates.html .map-item", () => {
+				document.querySelector(`#map${i} .map-title`).innerText = map.title;
+				document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
+				if(map.isPublic) {
+					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
+				}
+				else {
+					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;private";
+				}
+				document.querySelector(`#map${i} .edit-button`).hidden = true;
+				document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+					//TODO: like map
+				};
+				document.querySelector(`#map${i} .print-button`).onclick = (event) => {
+					//TODO: print map
+				};
+			});
+		}
+	}
+}
+
 rhit.FbAuthManager = class {
 	constructor() {
 		this._user = null;
@@ -319,6 +375,7 @@ rhit.FbAuthManager = class {
 rhit.initializePage = function() {
 
 	rhit.intializeNavbar();
+	rhit.fbCavesManager = new rhit.FbCavesManager(rhit.fbAuthManager.uid);
 
 	if(document.querySelector("#generatePage")) {
 		rhit.caveSystemGenerator = new rhit.CaveSystemGenerator();
@@ -331,8 +388,9 @@ rhit.initializePage = function() {
 			document.querySelector("#saveButton").dataset.target = "#saveModal";
 		}
 	}
-
-	rhit.fbCavesManager = new rhit.FbCavesManager(rhit.fbAuthManager.uid);
+	else if(document.querySelector("#browsePage")) {
+		new rhit.BrowsePageController();
+	}
 
 	$("body").bootstrapMaterialDesign();
 }

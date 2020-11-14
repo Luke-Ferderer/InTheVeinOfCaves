@@ -263,26 +263,25 @@ rhit.BrowsePageController = class {
 	updateList() {
 		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
 			const map = rhit.fbCavesManager.getCaveAtIndex(i);
-			map.beginListening(this.loadMapData.bind(this), i, map);
-			
+			map.beginListening(loadMapData.bind(this), i, map);
 		}
 	}
+}
 
-	loadMapData(i, map) {
-		$("#mapList").append(`<div id="map${i}"></div>`);
-		$(`#map${i}`).load("/templates.html .map-item", () => {
-			document.querySelector(`#map${i} .map-title`).innerText = map.name;
-			document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-			document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-			document.querySelector(`#map${i} .edit-button`).hidden = true;
-			document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-				map.like();
-			};
-			document.querySelector(`#map${i} .print-button`).onclick = (event) => {
-				//TODO: print map
-			};
-		});
-	}
+function loadMapData(i, map) {
+	$("#mapList").append(`<div id="map${i}"></div>`);
+	$(`#map${i}`).load("/templates.html .map-item", () => {
+		document.querySelector(`#map${i} .map-title`).innerText = map.name;
+		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
+		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
+		document.querySelector(`#map${i} .edit-button`).hidden = true;
+		document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+			map.like();
+		};
+		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
+			//TODO: print map
+		};
+	});
 }
 
 rhit.AccountPageController = class {
@@ -293,24 +292,7 @@ rhit.AccountPageController = class {
 	updateList() {
 		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
 			const map = rhit.fbCavesManager.getCaveAtIndex(i);
-			$("#mapList").append(`<div id="map${i}"></div>`);
-			$(`#map${i}`).load("/templates.html .map-item", () => {
-				document.querySelector(`#map${i} .map-title`).innerText = map.name;
-				document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-				if(map.isPublic) {
-					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-				}
-				else {
-					document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;private";
-				}
-				document.querySelector(`#map${i} .like-button`).hidden = true;
-				document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
-					map.like();
-				};
-				document.querySelector(`#map${i} .print-button`).onclick = (event) => {
-					//TODO: print map
-				};
-			});
+			map.beginListening(loadMapData.bind(this), i, map);
 		}
 	}
 }

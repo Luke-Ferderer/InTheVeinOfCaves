@@ -357,22 +357,28 @@ rhit.BrowsePageController = class {
 	}
 }
 
-function loadMapData(i, map) {
+function loadMapData(i, map, browse) {
 	$("#mapList").append(`<div id="map${i}"></div>`);
 	$(`#map${i}`).load("/templates.html .map-item", () => {
-		const drawer = new rhit.CaveSystemDrawer(document.querySelector(`#map${i} .paper`), false);
-		this.caveSystemDrawers.push(drawer);
 		document.querySelector(`#map${i} .map-title`).innerText = map.name;
 		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
 		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-		document.querySelector(`#map${i} .edit-button`).hidden = true;
-		document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-			map.like();
-		};
+		if(browse) {
+			document.querySelector(`#map${i} .edit-button`).hidden = true;
+			document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+				map.like();
+			};
+		}
+		else {
+			document.querySelector(`#map${i} .like-button`).hidden = true;
+			document.querySelector(`#map${i} .edit-button`).dataset.target = "#editModal";
+			document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
+				rhit.accountPageController.selectedMap = map;
+			};
+		}
 		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
 			//TODO: print map
 		};
-		drawer.drawCaveSystem(map.mapInfo);
 	});
 }
 

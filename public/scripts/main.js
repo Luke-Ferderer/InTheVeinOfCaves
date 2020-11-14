@@ -380,6 +380,7 @@ rhit.AccountPageController = class {
 	constructor() {
 		rhit.fbCavesManager.beginListening(this.updateList.bind(this));
 		this.selectedMap = null;
+		this.caveSystemDrawers = [];
 	}
 
 	updateList() {
@@ -388,31 +389,6 @@ rhit.AccountPageController = class {
 			map.beginListening(loadMapData.bind(this), i, map, false);
 		}
 	}
-}
-
-function loadMapData(i, map, browse) {
-	$("#mapList").append(`<div id="map${i}"></div>`);
-	$(`#map${i}`).load("/templates.html .map-item", () => {
-		document.querySelector(`#map${i} .map-title`).innerText = map.name;
-		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-		if(browse) {
-			document.querySelector(`#map${i} .edit-button`).hidden = true;
-			document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-				map.like();
-			};
-		}
-		else {
-			document.querySelector(`#map${i} .like-button`).hidden = true;
-			document.querySelector(`#map${i} .edit-button`).dataset.target = "#editModal";
-			document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
-				rhit.accountPageController.selectedMap = map;
-			};
-		}
-		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
-			//TODO: print map
-		};
-	});
 }
 
 rhit.FbAuthManager = class {

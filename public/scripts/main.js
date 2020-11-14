@@ -31,9 +31,10 @@ rhit.CaveSystemGenerator = class {
 		this.generateSystem();
 	};
 
-	generateSystem(numCaves, generateEntranceExit = true) {
+	generateSystem(numCaves, generateEntranceExit, generateLines) {
 		let cavesToGenerate = numCaves ? numCaves : rhit.randomRange(3, 8);
-		let caveSystem = [];
+		let caveSystemObject = { "system": [], "generateLines":generateLines };
+		let caveSystem = caveSystemObject.system;
 
 		//generate the caves themselves
 		for(let i = 0; i < cavesToGenerate; i++) {
@@ -56,7 +57,7 @@ rhit.CaveSystemGenerator = class {
 			this.shuffle(caveSystem[i].links);
 		}
 
-		this.currentSystem = caveSystem;
+		this.currentSystem = caveSystemObject;
 	};
 
 	nearestCave = function(caveSystem, index) {
@@ -118,19 +119,28 @@ rhit.CaveSystemDrawer = class {
 		this.paper = Raphael(container.id, "100%", "100%");
 	}
 
-	drawCaveSystem(system) {
+	drawCaveSystem(caveSystem) {
 
 		this.paper.clear();
+		const system = caveSystem.system;
 
 		for(let i = 0; i < system.length; i++) {
 			const currentCave = system[i];
 
 			this.drawCave(currentCave);
-			for(let j = 0; j < currentCave.links.length; j++) {
-				if(currentCave.links[j] && currentCave.links[j] > i) {
-					//draw link
-					const otherCave = system[currentCave.links[j]];
-					console.log(currentCave, otherCave);
+			if(caveSystem.generateLines) {
+				for(let j = 0; j < currentCave.links.length; j++) {
+					if(currentCave.links[j] && currentCave.links[j] > i) {
+						//draw link
+						const otherCave = system[currentCave.links[j]];
+						const firstPoint = this.getExitPosition(currentCave, i);
+						const secondPoint = this.getExitPosition(otherCave, otherCave.links.indexOf(i));
+
+						console.log(firstPoint, secondPoint);
+
+						const pathString = `M${(firstPoint.x-1.1) * this.container.offsetWidth / 100} ${(firstPoint.y-1.1) * this.container.offsetHeight / 100}L${(secondPoint.x-1.1) * this.container.offsetWidth / 100} ${(secondPoint.y-1.1) * this.container.offsetHeight / 100}`
+						const link = this.paper.path(pathString);
+					}
 				}
 			}
 		}
@@ -162,19 +172,19 @@ rhit.CaveSystemDrawer = class {
 	getExitPosition(cave, exitIndex) {
 		switch(exitIndex) {
 			case 0: //top
-				return [cave.x, cave.y - rhit.CONST_CAVE_SIDE];
+				return {'x':cave.x, 'y':cave.y - rhit.CONST_CAVE_SIDE};
 			case 1: //top right
-				return [cave.x + rhit.CONST_CAVE_SIDE / 2, cave.y - rhit.CONST_CAVE_SIDE / 2];
+				return {'x':cave.x + rhit.CONST_CAVE_SIDE / 2, 'y':cave.y - rhit.CONST_CAVE_SIDE / 2};
 			case 2: //bottom right
-				return [cave.x + rhit.CONST_CAVE_SIDE / 2, cave.y + rhit.CONST_CAVE_SIDE / 2];
+				return {'x':cave.x + rhit.CONST_CAVE_SIDE / 2, 'y':cave.y + rhit.CONST_CAVE_SIDE / 2};
 			case 3: //bottom
-				return [cave.x, cave.y + rhit.CONST_CAVE_SIDE];
+				return {'x':cave.x, 'y':cave.y + rhit.CONST_CAVE_SIDE};
 			case 4: //bottom left
-				return [cave.x - rhit.CONST_CAVE_SIDE / 2, cave.y + rhit.CONST_CAVE_SIDE / 2];
+				return {'x':cave.x - rhit.CONST_CAVE_SIDE / 2, 'y':cave.y + rhit.CONST_CAVE_SIDE / 2};
 			case 5: //top left
-				return [cave.x - rhit.CONST_CAVE_SIDE / 2, cave.y - rhit.CONST_CAVE_SIDE / 2];
+				return {'x':cave.x - rhit.CONST_CAVE_SIDE / 2, 'y':cave.y - rhit.CONST_CAVE_SIDE / 2};
 			default:
-				return;
+				return {'x':cave.x, 'y':cave.y};
 		}
 	}
 

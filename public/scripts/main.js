@@ -24,6 +24,7 @@ rhit.caveSystemGenerator;
 rhit.fbAuthManager;
 rhit.fbSingleCaveManager;
 rhit.fbCavesManager;
+rhit.accountPageController;
 
 rhit.CaveSystemGenerator = class {
 	constructor() {
@@ -378,6 +379,7 @@ function loadMapData(i, map) {
 rhit.AccountPageController = class {
 	constructor() {
 		rhit.fbCavesManager.beginListening(this.updateList.bind(this));
+		this.selectedMap = null;
 	}
 
 	updateList() {
@@ -402,9 +404,10 @@ function loadMapData(i, map, browse) {
 		}
 		else {
 			document.querySelector(`#map${i} .like-button`).hidden = true;
+			document.querySelector(`#map${i} .edit-button`).dataset.target = "#editModal";
 			document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
-				//TODO: edit map
-			}
+				rhit.accountPageController.selectedMap = map;
+			};
 		}
 		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
 			//TODO: print map
@@ -505,7 +508,15 @@ rhit.initializePage = function() {
 		new rhit.BrowsePageController();
 	}
 	else if(document.querySelector("#accountPage")) {
-		new rhit.AccountPageController();
+		rhit.accountPageController = new rhit.AccountPageController();
+		$("#editModal").on("show.bs.modal", (error) => {
+			document.querySelector("#inputMapName").value = rhit.accountPageController.selectedMap.name;
+			document.querySelector("#inputMapName").parentElement.classList.add("is-filled");
+			document.querySelector("#inputMapTags").value = rhit.accountPageController.selectedMap.tags;
+			document.querySelector("#inputMapTags").parentElement.classList.add("is-filled");
+			document.querySelector("#inputExits").checked = rhit.accountPageController.selectedMap.isPublic;
+			document.querySelector("#deleteButton").onclick = rhit.accountPageController.selectedMap.delete();
+		});
 	}
 
 	$("body").bootstrapMaterialDesign();

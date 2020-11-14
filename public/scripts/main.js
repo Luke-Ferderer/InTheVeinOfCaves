@@ -171,9 +171,9 @@ rhit.FbSingleCaveManager = class {
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
 			if (doc.exists) {
 				this._documentSnapshot = doc;
+				console.log(this._documentSnapshot);
 			}
 		});
-		console.log("done");
 	}
 
 	stopListening() {

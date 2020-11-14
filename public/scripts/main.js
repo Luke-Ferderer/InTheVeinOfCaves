@@ -16,6 +16,9 @@ rhit.FB_KEY_PUBLIC = "public";
 rhit.FB_KEY_TAGS = "tags";
 rhit.FB_KEY_USER = "user";
 
+rhit.CONST_CAVE_WIDTH = 7;
+rhit.CONST_CAVE_SIDE = ((rhit.CONST_CAVE_WIDTH**2)/2)**.5;
+
 rhit.navBarTemplate;
 rhit.caveSystemGenerator;
 rhit.fbAuthManager;
@@ -28,9 +31,10 @@ rhit.CaveSystemGenerator = class {
 		this.generateSystem();
 	};
 
-	generateSystem(numCaves, generateEntranceExit = true) {
+	generateSystem(numCaves, generateEntranceExit, generateLines) {
 		let cavesToGenerate = numCaves ? numCaves : rhit.randomRange(3, 8);
-		let caveSystem = [];
+		let caveSystemObject = { "system": [], "generateLines":generateLines };
+		let caveSystem = caveSystemObject.system;
 
 		//generate the caves themselves
 		for(let i = 0; i < cavesToGenerate; i++) {
@@ -53,7 +57,7 @@ rhit.CaveSystemGenerator = class {
 			this.shuffle(caveSystem[i].links);
 		}
 
-		this.currentSystem = caveSystem;
+		this.currentSystem = caveSystemObject;
 	};
 
 	nearestCave = function(caveSystem, index) {
@@ -90,8 +94,8 @@ rhit.CaveSystemGenerator = class {
 rhit.Cave = class {
 	constructor(isEntrance, isExit) {
 		this.size = rhit.randomRange(1, 6);
-		this.x = rhit.randomRange(0, 100);
-		this.y = rhit.randomRange(0, 100);
+		this.x = rhit.randomRange(rhit.CONST_CAVE_WIDTH + 3, 98);
+		this.y = rhit.randomRange(rhit.CONST_CAVE_WIDTH + 3, 98);
 		this.links = [null, null, null, null, null, null];
 		this.isEntrance = isEntrance;
 		this.isExit = isExit;
@@ -105,6 +109,85 @@ rhit.Cave = class {
 
 rhit.randomRange = function(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+rhit.CaveSystemDrawer = class {
+
+	constructor(container, displaySize=true) {
+		this.container = container;
+		this.displaySize = displaySize;
+		this.paper = Raphael(container.id, "100%", "100%");
+	}
+
+	drawCaveSystem(caveSystem) {
+
+		this.paper.clear();
+		const system = caveSystem.system;
+
+		for(let i = 0; i < system.length; i++) {
+			const currentCave = system[i];
+
+			this.drawCave(currentCave);
+			if(caveSystem.generateLines) {
+				for(let j = 0; j < currentCave.links.length; j++) {
+					if(currentCave.links[j] && currentCave.links[j] > i) {
+						//draw link
+						const otherCave = system[currentCave.links[j]];
+						const firstPoint = this.getExitPosition(currentCave, i);
+						const secondPoint = this.getExitPosition(otherCave, otherCave.links.indexOf(i));
+
+						console.log(firstPoint, secondPoint);
+
+						const pathString = `M${(firstPoint.x-1.1) * this.container.offsetWidth / 100} ${(firstPoint.y-1.1) * this.container.offsetHeight / 100}L${(secondPoint.x-1.1) * this.container.offsetWidth / 100} ${(secondPoint.y-1.1) * this.container.offsetHeight / 100}`
+						const link = this.paper.path(pathString);
+					}
+				}
+			}
+		}
+	}
+
+	drawCave(cave) {
+		const topLeftX = cave.x - rhit.CONST_CAVE_SIDE;
+		const topLeftY = cave.y - rhit.CONST_CAVE_SIDE;
+
+		const diamond = this.paper.rect(topLeftX + "%", topLeftY + "%", rhit.CONST_CAVE_WIDTH + "%", rhit.CONST_CAVE_WIDTH + "%");
+		diamond.node.classList.add("cave-rect");
+		diamond.rotate(45);
+
+		///this is a hack due to path not supporting %s
+		const trueWidth = rhit.CONST_CAVE_WIDTH * 1.5 * this.container.offsetWidth / 100;
+		const trueTLX = (cave.x - rhit.CONST_CAVE_WIDTH) * this.container.offsetWidth / 100;
+		const trueTLY = (cave.y - rhit.CONST_CAVE_WIDTH) * this.container.offsetHeight / 100;
+
+		const pathString = `M${trueTLX} ${trueTLY}h${trueWidth}M${trueTLX} ${trueTLY + trueWidth}h${trueWidth}`;
+		const bars = this.paper.path(pathString);
+		
+		if(this.displaySize) {
+			const sizeText = this.paper.text((topLeftX + (rhit.CONST_CAVE_WIDTH/2)) + "%", (topLeftY + (rhit.CONST_CAVE_WIDTH/2)) + "%", cave.size)
+			sizeText.attr({fill: "#000"});
+			sizeText.node.setAttribute("dominant-baseline", "middle"); //properly centers text
+		}
+	}
+
+	getExitPosition(cave, exitIndex) {
+		switch(exitIndex) {
+			case 0: //top
+				return {'x':cave.x, 'y':cave.y - rhit.CONST_CAVE_SIDE};
+			case 1: //top right
+				return {'x':cave.x + rhit.CONST_CAVE_SIDE / 2, 'y':cave.y - rhit.CONST_CAVE_SIDE / 2};
+			case 2: //bottom right
+				return {'x':cave.x + rhit.CONST_CAVE_SIDE / 2, 'y':cave.y + rhit.CONST_CAVE_SIDE / 2};
+			case 3: //bottom
+				return {'x':cave.x, 'y':cave.y + rhit.CONST_CAVE_SIDE};
+			case 4: //bottom left
+				return {'x':cave.x - rhit.CONST_CAVE_SIDE / 2, 'y':cave.y + rhit.CONST_CAVE_SIDE / 2};
+			case 5: //top left
+				return {'x':cave.x - rhit.CONST_CAVE_SIDE / 2, 'y':cave.y - rhit.CONST_CAVE_SIDE / 2};
+			default:
+				return {'x':cave.x, 'y':cave.y};
+		}
+	}
+
 }
 
 rhit.FbCavesManager = class
@@ -234,14 +317,16 @@ rhit.GeneratePageController = class {
 
 		document.querySelector("#generateButton").onclick = (params) => {
 			rhit.caveSystemGenerator.generateSystem();
-			console.log(rhit.caveSystemGenerator.currentSystem);
+			this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
 		document.querySelector("#submitConfigure").onclick = (params) => {
 			console.log(numCavesInput.value, enterExitInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
 			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
-			console.log(rhit.caveSystemGenerator.currentSystem);
+			this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};
 
 		document.querySelector("#submitSave").onclick = (params) => {
@@ -251,7 +336,9 @@ rhit.GeneratePageController = class {
 			rhit.fbCavesManager.add(name, tags, mapInfo);
 		};
 
-		console.log(rhit.caveSystemGenerator.currentSystem);
+		this.caveSystemDrawer = new rhit.CaveSystemDrawer(document.querySelector("#canvas"));
+		this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
+		//console.log(rhit.caveSystemGenerator.currentSystem);
 	}
 }
 

@@ -13,7 +13,9 @@
 <body>
   <div id="navBar"></div>
   <div id="generatePage" class="container page-container">
-    <div><img src="MapTemp.jpeg"></div><!-- TODO: Replace this with actual maps -->
+    
+    <div id="canvas" class="paper"></div>
+
     <div id="generateButtons">
       <div>
         <button id="configureButton" type="button" class="btn" data-toggle="modal" data-target="#configureModal">Configure</button>
@@ -100,6 +102,7 @@
   <script src="/__/firebase/7.18.0/firebase-auth.js"></script>
   <script src="/__/firebase/7.18.0/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
+  <script src="scripts/raphael.min.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 

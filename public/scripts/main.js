@@ -509,7 +509,7 @@ rhit.initializePage = function() {
 	}
 	else if(document.querySelector("#accountPage")) {
 		rhit.accountPageController = new rhit.AccountPageController();
-		$("#editModal").on("show.bs.modal", (error) => {
+		$("#editModal").on("show.bs.modal", () => {
 			document.querySelector("#inputMapName").value = rhit.accountPageController.selectedMap.name;
 			document.querySelector("#inputMapName").parentElement.classList.add("is-filled");
 			document.querySelector("#inputMapTags").value = rhit.accountPageController.selectedMap.tags;

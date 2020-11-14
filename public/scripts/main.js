@@ -514,8 +514,9 @@ rhit.initializePage = function() {
 			document.querySelector("#inputMapName").parentElement.classList.add("is-filled");
 			document.querySelector("#inputMapTags").value = rhit.accountPageController.selectedMap.tags;
 			document.querySelector("#inputMapTags").parentElement.classList.add("is-filled");
-			document.querySelector("#inputExits").checked = rhit.accountPageController.selectedMap.isPublic;
-			document.querySelector("#deleteButton").onclick = rhit.accountPageController.selectedMap.delete();
+			document.querySelector("#isPublic").checked = rhit.accountPageController.selectedMap.isPublic;
+			document.querySelector("#deleteButton").onclick = rhit.accountPageController.selectedMap.delete;
+			document.querySelector("#submitSave").onclick = function () {rhit.accountPageController.selectedMap.update(document.querySelector("#inputMapName").value, document.querySelector("#inputMapTags").value,document.querySelector("#isPublic").checked,rhit.accountPageController.selectedMap.likes)};
 		});
 	}
 

@@ -263,25 +263,9 @@ rhit.BrowsePageController = class {
 	updateList() {
 		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
 			const map = rhit.fbCavesManager.getCaveAtIndex(i);
-			map.beginListening(loadMapData.bind(this), i, map);
+			map.beginListening(loadMapData.bind(this), i, map, true);
 		}
 	}
-}
-
-function loadMapData(i, map) {
-	$("#mapList").append(`<div id="map${i}"></div>`);
-	$(`#map${i}`).load("/templates.html .map-item", () => {
-		document.querySelector(`#map${i} .map-title`).innerText = map.name;
-		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-		document.querySelector(`#map${i} .edit-button`).hidden = true;
-		document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-			map.like();
-		};
-		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
-			//TODO: print map
-		};
-	});
 }
 
 rhit.AccountPageController = class {
@@ -292,9 +276,33 @@ rhit.AccountPageController = class {
 	updateList() {
 		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
 			const map = rhit.fbCavesManager.getCaveAtIndex(i);
-			map.beginListening(loadMapData.bind(this), i, map);
+			map.beginListening(loadMapData.bind(this), i, map, false);
 		}
 	}
+}
+
+function loadMapData(i, map, browse) {
+	$("#mapList").append(`<div id="map${i}"></div>`);
+	$(`#map${i}`).load("/templates.html .map-item", () => {
+		document.querySelector(`#map${i} .map-title`).innerText = map.name;
+		document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
+		document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
+		if(browse) {
+			document.querySelector(`#map${i} .edit-button`).hidden = true;
+			document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+				map.like();
+			};
+		}
+		else {
+			document.querySelector(`#map${i} .like-button`).hidden = true;
+			document.querySelector(`#map${i} .edit-button`).onclick = (event) => {
+				//TODO: edit map
+			}
+		}
+		document.querySelector(`#map${i} .print-button`).onclick = (event) => {
+			//TODO: print map
+		};
+	});
 }
 
 rhit.FbAuthManager = class {

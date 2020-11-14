@@ -167,12 +167,12 @@ rhit.FbSingleCaveManager = class {
 		this._unsubscribe = null;
 	}
 
-	beginListening(changeListener, i, map)
+	beginListening(changeListener, i, map, browse)
 	{
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
 			if (doc.exists) {
 				this._documentSnapshot = doc;
-				changeListener(i, map);
+				changeListener(i, map, browse);
 			}
 		});
 	}

@@ -314,7 +314,7 @@ rhit.FbSingleCaveManager = class {
 rhit.GeneratePageController = class {
 	constructor() {
 		const numCavesInput = document.querySelector("#inputNumberOfCaves");
-		const enterExitInput = document.querySelector("#inputExits")
+		const generateLinesInput = document.querySelector("#inputExits")
 
 		document.querySelector("#generateButton").onclick = (params) => {
 			rhit.caveSystemGenerator.generateSystem();
@@ -323,9 +323,9 @@ rhit.GeneratePageController = class {
 		};
 
 		document.querySelector("#submitConfigure").onclick = (params) => {
-			console.log(numCavesInput.value, enterExitInput.checked);
+			console.log(numCavesInput.value, generateLinesInput.checked);
 			const numToUse = numCavesInput.value ? parseInt(numCavesInput.value) : rhit.randomRange(3,9);
-			rhit.caveSystemGenerator.generateSystem(numToUse, enterExitInput.value);
+			rhit.caveSystemGenerator.generateSystem(numToUse, false, generateLinesInput.value);
 			this.caveSystemDrawer.drawCaveSystem(rhit.caveSystemGenerator.currentSystem);
 			//console.log(rhit.caveSystemGenerator.currentSystem);
 		};

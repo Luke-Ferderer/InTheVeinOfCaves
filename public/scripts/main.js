@@ -167,11 +167,12 @@ rhit.FbSingleCaveManager = class {
 		this._unsubscribe = null;
 	}
 
-	init() {
+	beginListening(changeListener, i, map)
+	{
 		this._unsubscribe = this._ref.onSnapshot((doc) => {
 			if (doc.exists) {
 				this._documentSnapshot = doc;
-				console.log(this._documentSnapshot);
+				changeListener(i, map);
 			}
 		});
 	}
@@ -262,21 +263,25 @@ rhit.BrowsePageController = class {
 	updateList() {
 		for(let i = 0; i < rhit.fbCavesManager.length; i++) {
 			const map = rhit.fbCavesManager.getCaveAtIndex(i);
-			map.init();
-			$("#mapList").append(`<div id="map${i}"></div>`);
-			$(`#map${i}`).load("/templates.html .map-item", () => {
-				document.querySelector(`#map${i} .map-title`).innerText = map.name;
-				document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
-				document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
-				document.querySelector(`#map${i} .edit-button`).hidden = true;
-				document.querySelector(`#map${i} .like-button`).onclick = (event) => {
-					map.like();
-				};
-				document.querySelector(`#map${i} .print-button`).onclick = (event) => {
-					//TODO: print map
-				};
-			});
+			map.beginListening(this.loadMapData.bind(this), i, map);
+			
 		}
+	}
+
+	loadMapData(i, map) {
+		$("#mapList").append(`<div id="map${i}"></div>`);
+		$(`#map${i}`).load("/templates.html .map-item", () => {
+			document.querySelector(`#map${i} .map-title`).innerText = map.name;
+			document.querySelector(`#map${i} .map-tags`).innerText = map.tags;
+			document.querySelector(`#map${i} .map-likes`).innerHTML = "<span class='heart'>♥</span>&nbsp;" + map.likes;
+			document.querySelector(`#map${i} .edit-button`).hidden = true;
+			document.querySelector(`#map${i} .like-button`).onclick = (event) => {
+				map.like();
+			};
+			document.querySelector(`#map${i} .print-button`).onclick = (event) => {
+				//TODO: print map
+			};
+		});
 	}
 }
 
@@ -315,10 +320,10 @@ rhit.FbAuthManager = class {
 		this._user = null;
 	}
 
-	beginListening(changeListener) {
+	beginListening(changeListener, i, map) {
 		firebase.auth().onAuthStateChanged((user) => {
 			this._user = user;
-			changeListener();
+			changeListener(i, map);
 		});
 	}
 
